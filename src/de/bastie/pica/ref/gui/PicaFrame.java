@@ -12,7 +12,12 @@ import javax.swing.tree.*;
 import de.bastie.pica.bo.*;
 import de.bastie.pica.bo.ustva.*;
 import de.bastie.pica.ref.gui.mask.*;
-
+/**
+ * Referenzimplementierung
+ *
+ * @author unbekannt
+ * @version 1.0 $Revision$, $Date$
+ */
 public class PicaFrame extends JFrame {
 
   private JLabel statusZeile = new JLabel("Pica Pica © 2006 Bastie - Sebastian Ritter");
@@ -33,6 +38,7 @@ public class PicaFrame extends JFrame {
 
   public PicaFrame() {
     super("Pica Pica");
+    this.setIconImage(new ImageIcon (this.getClass().getResource("../res/monetary_euro_symbol_01-grey.png")).getImage());
 
     this.boDatenlieferant = new DatenlieferantImpl();
     this.masken = new UStVAMask(aktuelleSteuerart, 2007);
