@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!--
+  min: Minimale Anzahl die erwartet wird
+  max: Maximale Anzahl die erwartet wird
+  id: Eindeutiger Zuordner
+  vorjahr: id des Vorjahres die dem entspricht
+  eingabe:
+    pflicht  = zwingend notwendig
+    wunsch   = Vorhandensein erwünscht
+    optional
+  format:
+    A = alphanumerisch
+    D = Datum, wird gefolgt von dem Format (in englisch Buchstaben codiert z.B. Ddd.MM.jjjj)
+    F = numerische Dezimalzahl, wird gefolgt von der Anzahl der maximalen Zeichen vor dem Punkt + '.' + Anzahl der maximalen Zeichen nach dem Punkt
+    G = numerische Ganzzahl
+    H = wie F, jedoch nur positive Werte und 0 bzw. 0.00 (Null) zulässig
+    h = wie F, jedoch nur negative Werte und 0 bzw. 0.00(Null) zulässig
+    I = wie F, jedoch nur positive Werte zulässig
+    i = wie F, jedoch nur negative Werte zulässig
+    M = Formatierter String im MaskFormatter Format, wird gefolgt von der Codierung
+-->
+<pica>
+  <Eingabeplan DatenArt='UStVA' Zeitraum='2007'>
+    <Feld id="Name" kurztext="Name" format="A" min="1" max="45" eingabe="pflicht" />
+    <Feld id="Strasse" kurztext="Straße" format="A" min="1" max="30" eingabe="pflicht" />
+    <Feld id="PLZ" kurztext="PLZ" format="A" min="1" max="12" eingabe="pflicht" />
+    <Feld id="Ort" kurztext="Ort" format="A" min="1" max="30" eingabe="pflicht" />
+    <Feld id="Telefon" kurztext="Telefon" format="A" min="1" max="20" />
+    <Feld id="eMail" kurztext="eMail" format="A" min="1" max="70" eingabe="wunsch">
+      <Wert plausi="de.bastie.steuer.bo.util.PlausiEMail" />
+    </Feld>
+    <Feld id="Erstellungsdatum" kurztext="Erstellungsdatum" format="DyyyyMMdd" eingabe="pflicht"/>
+    <Feld id="Jahr" kurztext="Jahr" format="Dyyyy" />
+    <Feld id="Zeitraum" kurztext="Zeitraum" format="G" min="2" max="2">
+      <Wert typ="Liste" separator=",">01,02,03,04,05,06,07,08,09,10,11,12,41,42,43,44</Wert>
+    </Feld>
+    <Feld id="Steuernummer" kurztext="Steuernummer" format="M#############" min="13" max="13">
+      <Wert plausi="de.bastie.steuer.bo.util.PlausiSteuernummer" format="de.bastie.steuer.bo.util.FormatSteuernummer" />
+    </Feld>
+    <Feld id="Kz09" kurztext="Hersteller / Kurzinfo" format="A" min="5" max="95" eingabe="pflicht">
+      <Wert pattern="([0-9]{5})(\*([^\p{C}*]{0,85})\*([^\p{C}*]{0,85})\*([^\p{C}*]{0,85})\*([^\p{C}*]{0,85})\*([^\p{C}*]{0,85}))?"
+            format="de.bastie.steuer.bo.usta.util.FormatKz09" />
+    </Feld>
+    <Feld id="Kz10" kurztext="Berichtigte Anmeldung" format="G" min="1" max="1" eingabe="optional">
+      <Wert typ="Liste" separator=','>1</Wert>
+    </Feld>
+    <Feld id="Kz22" kurztext="Belege werden gesondert eingereicht" format="G" min="1" max="1">
+      <Wert typ="Liste" separator=','>1</Wert>
+    </Feld>
+    <Feld id="Kz26" format="G" min="1" max="1" eingabe="optional">
+      <Wert typ="Liste" separator=','>1</Wert>
+    </Feld>
+    <Feld id="Kz29" format="G" min="1" max="1" eingabe="optional">
+      <Wert typ="Liste" separator=','>1</Wert>
+    </Feld>
+    <Feld id="Kz35" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz36" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz39" format="I" min="4" max="14">
+      <Wert pattern="\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz41" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz42" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz43" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz44" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz45" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz48" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz49" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz52" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz53" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz59" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz60" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz61" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz62" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz63" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz64" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz65" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz66" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz67" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz69" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz73" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz74" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz76" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz77" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz80" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz81" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz83" format="F" min="4" max="15" eingabe="pflicht">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz84" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz85" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz86" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz89" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz91" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz93" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz94" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz95" format='G' min="1" max="14">
+      <Wert pattern="[\-]{0,1}\d{1,13}" />
+    </Feld>
+    <Feld id="Kz96" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+    <Feld id="Kz98" format="F" min="4" max="15">
+      <Wert pattern="[\-]{0,1}\d{1,11}[.]\d{2}" />
+    </Feld>
+  </Eingabeplan>
+  <Eingabeplan DatenArt='LStA' Zeitraum='2007'>
+  </Eingabeplan>
+</pica>
