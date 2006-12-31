@@ -1,3 +1,7 @@
+/**
+ * DatenlieferantImpl
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.bo;
 
 import java.util.HashMap;
@@ -62,5 +66,9 @@ public class DatenlieferantImpl implements IDatenlieferant {
 
   public void setWert(final String id, final String wert) {
     this.wert.put(id,wert);
+  }
+
+  public void removeWert(String id) {
+    this.wert.remove(id);
   }
 }

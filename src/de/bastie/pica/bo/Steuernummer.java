@@ -1,14 +1,24 @@
+/**
+ * Steuernummer
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.bo;
 
-import java.util.HashMap;
-import de.bastie.pica.SteuerException;
-import de.bastie.pica.bo.ustva.Umsatzsteuervoranmeldung;
-import de.bastie.pica.bo.ustva.Dauerfristverlaengerung;
-import de.bastie.pica.bo.lsta.Lohnsteueranmeldung;
+import java.util.*;
+
+import de.bastie.pica.*;
+import de.bastie.pica.bo.lsta.*;
+import de.bastie.pica.bo.ustva.*;
 
 public final class Steuernummer {
-
+  /**
+   * Die Steuernummer
+   */
   private long steuernummerMitBUFA;
+  /**
+   * Finanzamt der Steuernummer
+   */
+  private Finanzamt finanzamt;
 
   /**
    * Setzt eine neue Steuernummer und führt eine Prüfung dieser durch.
@@ -18,6 +28,7 @@ public final class Steuernummer {
    * @throws IllegalSteuernummerException
    */
   public boolean setSteuernummerMitBUFA (final long stnrMitBufa) throws IllegalSteuernummerException {
+    this.finanzamt = Finanzamt.getFinanzamt (stnrMitBufa);
     boolean pruefzifferOK = this.pruefeSteuernummer (stnrMitBufa);
     this.steuernummerMitBUFA = stnrMitBufa;
     return pruefzifferOK;
@@ -54,6 +65,7 @@ public final class Steuernummer {
     try {
       this.pruefeSteuernummer(steuernummerMitBUFA);
       switch (this.getBUFA ()) {
+        /** @todo über Klasse Finanzamt zu lösen */
         case 9101 : //Augsburg Stadt - AN
         case 9181 : //München 1 - AN
         case 9182 : //München 2 - AN
@@ -96,23 +108,24 @@ public final class Steuernummer {
     if (steuernummerMitBUFA < 100000000000l){
       throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_STEUERNUMMER_MIT_ZU_WENIG_STELLEN,"Die Steuernummer hat zu wenige Stellen.");
     }
-    if (steuernummerMitBUFA < 999999999999l){
+    if (steuernummerMitBUFA > 999999999999l){
       throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_STEUERNUMMER_MIT_ZU_VIELEN_STELLEN,"Die Steuernummer hat zu viele Stellen.");
     }
 
     // Zulässige BUFA prüfen
     problem = true;
+    final int steuernummerBufa = Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(0,4));
     for (int bufa : this.getAktuelleBUFAs()) {
-      if (steuernummerMitBUFA < ((bufa +1) * 100000000) &&
-          steuernummerMitBUFA >= (bufa * 100000000)) {
+      if (bufa == steuernummerBufa) {
         problem = false;
         break;
       }
     }
-    if (problem) throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_UNGUELTIGE_BUFA,"Unzulässige Bundeseinheitliche Finanzamtsnummer.");
-
+    if (problem) {
+      throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_UNGUELTIGE_BUFA, "Unzulässige Bundeseinheitliche Finanzamtsnummer [BUFA].");
+    }
     // Steuerbezirk prüfen
-    final String steuerbezirkString = Long.toString(steuernummerMitBUFA).substring(4,7);
+    final String steuerbezirkString = Long.toString(steuernummerMitBUFA).substring(5,8);
     final int steuerbezirk = Integer.parseInt(steuerbezirkString);
     if (steuerbezirk == 0) {
       throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_0,"Der Steuerbezirk "+steuerbezirkString+" ist ungültig.");
@@ -146,24 +159,56 @@ public final class Steuernummer {
 
   public int berechnePruefziffer (final long steuernummerMitBUFA) {
     /** @todo Not yet implemented */
-    throw new Error();
+    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
   }
 
   public String getBundeslandZurSteuernummer () {
     return this.getBundeslandZurSteuernummer(this.getSteuernummerMitBUFA());
   }
   public String getBundeslandZurSteuernummer (final long steuernummerMitBUFA) {
-    /** @todo Not yet implemented */
-    throw new Error();
+    //ehemals waren die ersten zwei Zeichen der BUFA quasi der OFD Bezirk
+    final int ofdKennung = Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(0,2));
+    switch (ofdKennung) {
+    case 10 : return "Bremen";
+    case 11 : return "Berlin";
+    case 21 : return "Schleswig Holstein";
+    case 22 : return "Hamburg";
+    case 23 : return "Niedersachsen";
+    case 24 : return "Bremen";
+    case 26 : return "Hessen";
+    case 27 : return "Rheinland Pfalz";
+    case 28 : return "Baden Württemberg";
+    case 30 : return "Brandenburg";
+    case 31 : return "Sachsen Anhalt";
+    case 32 : return "Sachsen";
+    case 40 : return "Mecklenburg Vorpommern";
+    case 41 : return "Thüringen";
+    case 51 :
+    case 52 :
+    case 53 : return "Nordrhein Westpfahlen";
+    case 91 :
+    case 92 : return "Bayern";
+    default : throw new SteuerException (900000000,"Die bundeseinheitliche Finanzamtsnummer ist nicht korrekt.");
+    }
   }
 
+  /**
+   * Liefert die formatierte Steuernummer im Landesformat mit den zugehörigen
+   * Querstrichen (/).
+   * @return String
+   */
   public String toFormatLandesFormatSteuernummer () {
     /** @todo Not yet implemented */
-    throw new Error();
+    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
   }
+  /**
+   * Liefert die Steuernummer mit der Anzahl der im ländereigenen Format
+   * genutzen Zeichen
+   * @return String
+   */
   public String toLandesFormatSteuernummer () {
     /** @todo Not yet implemented */
-    throw new Error();
+    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
   }
   public String toElsterFormatSteuernummer () {
     return Long.toString(this.getSteuernummerMitBUFA()).substring(0,4)+'0'+Long.toString(this.getSteuernummerMitBUFA()).substring(4);
@@ -171,22 +216,22 @@ public final class Steuernummer {
   public String toSteuernummerMitBUFA () {
     return Long.toString (this.getSteuernummerMitBUFA());
   }
+
   /**
    * Liefert alle aktuell gültigen bundeseinheitlichen Finanzamtsnummern
    * @return int
    */
-  public int[] getAktuelleBUFAs () {
-    /** @todo Not yet implemented */
-    throw new Error();
+  public synchronized int[] getAktuelleBUFAs () {
+    return Finanzamt.getAktuelleBUFAs ();
   }
 
   public String getLandeskennung (final String bundesland) {
     /** @todo Not yet implemented */
-    throw new Error();
+    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
   }
   public String [] getBundeslaender () {
     /** @todo Not yet implemented */
-    throw new Error();
+    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
   }
 
 
@@ -206,9 +251,6 @@ public final class Steuernummer {
     else if ("Berlin".equals(this.getBundeslandZurSteuernummer(steuernummerMitBUFA))) {
 
     }
-
-
-
     return pruefziffer;
   }
   /**

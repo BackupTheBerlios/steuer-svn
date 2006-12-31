@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!--
+  min: Minimale Anzahl die erwartet wird
+  max: Maximale Anzahl die erwartet wird
+  id: Eindeutiger Zuordner
+  vorjahr: id des Vorjahres die dem entspricht
+  eingabe:
+    pflicht  = zwingend notwendig
+    wunsch   = Vorhandensein erwÃÂÃÂ¼nscht
+    optional
+  format:
+    A = alphanumerisch
+    D = Datum, wird gefolgt von dem Format (in englisch Buchstaben codiert z.B. Ddd.MM.jjjj)
+    F = numerische Dezimalzahl, wird gefolgt von der Anzahl der maximalen Zeichen vor dem Punkt + '.' + Anzahl der maximalen Zeichen nach dem Punkt
+    G = numerische Ganzzahl
+    H = wie F, jedoch nur positive Werte und 0 bzw. 0.00 (Null) zulÃÂÃÂ¤ssig
+    h = wie F, jedoch nur negative Werte und 0 bzw. 0.00(Null) zulÃÂÃÂ¤ssig
+    I = wie F, jedoch nur positive Werte zulÃÂÃÂ¤ssig
+    i = wie F, jedoch nur negative Werte zulÃÂÃÂ¤ssig
+    M = Formatierter String im MaskFormatter Format, wird gefolgt von der Codierung
+-->
+<pica>
+  <Eingabeplan DatenArt='Unternehmer' Zeitraum='alle'>
+    <Feld id="UnternehmerName" kurztext="Name" format="A" min="1" max="45" eingabe="optional" />
+    <Feld id="UnternehmerStrasse" kurztext="Strasse" format="A" min="1" max="30" />
+    <Feld id="UnternehmerPLZ" kurztext="PLZ" format="A" min="1" max="12" />
+    <Feld id="UnternehmerOrt" kurztext="Ort" format="A" min="1" max="30" />
+    <Feld id="UnternehmerTelefon" kurztext="Ort" format="A" min="1" max="30" />
+    <Feld id="UnternehmerEMail" kurztext="Ort" format="A" min="1" max="30" />
+  </Eingabeplan>
+</pica>

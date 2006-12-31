@@ -1,3 +1,7 @@
+/**
+ * Eingabefeldplan
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.bo;
 
 import java.awt.*;
@@ -13,6 +17,8 @@ import de.bastie.pica.gui.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
+
+
 /**
  * Eingabefelder können inhaltlich auf bestimmte Werte eingeschränkt werden.
  * Mit Hilfe des Eingabefeldplanes ist es möglich eine Plausibilisierung
@@ -23,7 +29,10 @@ import org.xml.sax.*;
  */
 public class Eingabefeldplan {
 
-  private Document doc;
+    /**
+     * XML Dokument
+     */
+    private Document doc;
 
   /**
    * Erzeugt einen neuen Eingabefeldplan, indem die externe Definition geladen wird.
@@ -68,7 +77,50 @@ public class Eingabefeldplan {
               final int max = Integer.parseInt(((feld.getAttributes().getNamedItem("max") != null) ? feld.getAttributes().getNamedItem("max").getTextContent() : "0"));  //$NON-NLS-1$  //$NON-NLS-2$
               final String eingabe = (feld.getAttributes().getNamedItem("eingabe") != null) ? feld.getAttributes().getNamedItem("eingabe").getTextContent() : "optional";  //$NON-NLS-1$  //$NON-NLS-2$  //$NON-NLS-3$
 
-              eingabefelder.put(id, EingabeFeldFactory.createEingabefeld(art, id, format, min, max, eingabe));
+              if (feld.getChildNodes().getLength() > 0) {
+                Node wert = null;
+                for (int k = 0; k < feld.getChildNodes().getLength(); k++) {
+                  if ("Wert".equals(feld.getChildNodes().item(k).getNodeName())) {
+                    wert = feld.getChildNodes().item(k);
+                  }
+                }
+                if (wert != null) {
+                  ArrayList<String> zulaessigeWerte = null;
+                  if (wert.getAttributes().getNamedItem("typ") != null) {
+                    final String werteTyp = wert.getAttributes().getNamedItem("typ").getTextContent();
+                    if ("Liste".equals(werteTyp)) {
+                      zulaessigeWerte = new ArrayList<String>();
+                      final String delim = wert.getAttributes().getNamedItem("separator").getTextContent();
+                      StringTokenizer tokenizer = new StringTokenizer(wert.getTextContent(), delim, false);
+                      while (tokenizer.hasMoreElements()) {
+                        zulaessigeWerte.add(tokenizer.nextToken());
+                      }
+                      if (feld.getAttributes().getNamedItem("eingabe") != null &&
+                          "pflicht".equals(feld.getAttributes().getNamedItem("eingabe").getTextContent())) {
+                        eingabefelder.put(id, EingabeFeldFactory.createEingabefeld(art, id, format, min, max, eingabe, zulaessigeWerte, true));
+                      }
+                      else {
+                        eingabefelder.put(id, EingabeFeldFactory.createEingabefeld(art, id, format, min, max, eingabe, zulaessigeWerte, false));
+                      }
+                    }
+                    else {
+                      if (feld.getAttributes().getNamedItem("eingabe") != null &&
+                          "pflicht".equals(feld.getAttributes().getNamedItem("eingabe").getTextContent())) {
+                        eingabefelder.put(id, EingabeFeldFactory.createEingabefeld(art, id, format, min, max, eingabe, zulaessigeWerte, true));
+                      }
+                      else {
+                        eingabefelder.put(id, EingabeFeldFactory.createEingabefeld(art, id, format, min, max, eingabe, zulaessigeWerte, false));
+                      }
+                    }
+                  }
+                  else {
+                    eingabefelder.put(id, EingabeFeldFactory.createEingabefeld(art, id, format, min, max, eingabe));
+                  }
+                }
+              }
+              else {
+                eingabefelder.put(id, EingabeFeldFactory.createEingabefeld(art, id, format, min, max, eingabe));
+              }
             }
           }
         }
@@ -94,14 +146,14 @@ public class Eingabefeldplan {
     return eingabefelder;
   }
   /**
-   * Erzeugt die Eingabefelder für die Bearbeitung eines Datenlieferanten
-   * @param lieferant Datenlieferant
+   * Erzeugt die Eingabefelder für die Bearbeitung eines Mitwirkenden
+   * @param mitwirkender Mitwirkender
    * @return HashMap
    */
-  public HashMap<String, JComponent> createMitwirkenderJComponent (final IDatencontainer mitwirkender) {
+  public HashMap<String, JComponent> createMitwirkenderJComponent (final Mitwirkender mitwirkender) {
     HashMap<String, JComponent> eingabefelder = new HashMap<String, JComponent>();
     try {
-      this.doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(this.getClass().getResourceAsStream("../Mitwirkender.xml")); //$NON-NLS-1$
+      this.doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(this.getClass().getResourceAsStream("./Mitwirkender.xml")); //$NON-NLS-1$
       eingabefelder = this.createJComponents(mitwirkender,"alle");
     }
     catch (final Exception shit) {
@@ -110,6 +162,23 @@ public class Eingabefeldplan {
     return eingabefelder;
   }
 
+  /**
+   * Erzeugt die Eingabekomponenten für den Unternehmer
+   *
+   * @param unternehmer Unternehmer
+   * @return HashMap
+   */
+  public HashMap<String,JComponent> createUnternehmerJComponent (final Unternehmer unternehmer) {
+    HashMap<String, JComponent> eingabefelder = new HashMap<String, JComponent>();
+    try {
+      this.doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(this.getClass().getResourceAsStream("./Unternehmer.xml")); //$NON-NLS-1$
+      eingabefelder = this.createJComponents(unternehmer,"alle");//$NON-NLS-1$
+    }
+    catch (final Exception shit) {
+      shit.printStackTrace();
+    }
+    return eingabefelder;
+  }
 
 
 
@@ -153,11 +222,12 @@ public class Eingabefeldplan {
     JMenu auswertung = new JMenu("Auswertung");  //$NON-NLS-1$
     menuBar.add(auswertung);
     auswertung.add(new AbstractAction("Eingabewerte ausgeben") {  //$NON-NLS-1$
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         System.err.println(art.toXML());
       }
     });
     fenster.setJMenuBar(menuBar);
     fenster.setVisible(true);
   }
+
 }

@@ -1,3 +1,7 @@
+/**
+ * IDatenlieferant
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.bo;
 
 /**

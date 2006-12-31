@@ -1,3 +1,7 @@
+/**
+ * IDatencontainer
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.bo;
 
 /**
@@ -11,21 +15,26 @@ public interface IDatencontainer {
    * Liefert die Information zur Datenart zurück.
    * @return String
    */
-  public String getDatenArt ();
+  String getDatenArt ();
 
   /**
    * Liefert einen Eingabewert bezeichnet durch die ID (Kennzahl/Feldkennung/...).
    * @param id String
    * @return String
    */
-  public String getWert(final String id);
+  String getWert(final String id);
 
   /**
    * Setzt einen Eingabewert bezeichnet durch die ID (Kennzahl/Feldkennung/...).
    * @param id String
    * @param wert String
    */
-  public void setWert (final String id, final String wert);
+  void setWert (final String id, final String wert);
 
+  /**
+   * Entfernt einen Eingabewert
+   * @param id String
+   */
+  void removeWert (final String id);
 
 }

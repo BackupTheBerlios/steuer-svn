@@ -21,16 +21,16 @@
 -->
 <pica>
   <Eingabeplan DatenArt='Mitwirkender' Zeitraum='alle'>
-    <Feld id="Name" kurztext="Name" format="A" min="1" max="45" eingabe="pflicht">
+    <Feld id="MitwirkenderName" kurztext="Name" format="A" min="1" max="45" eingabe="optional">
       <Wert pattern="[^\s\p{C}][^\p{C}]*" />
     </Feld>
-    <Feld id="Beruf" kurztext="Beruf" format="A" min="1" max="30" eingabe="pflicht">
+    <Feld id="MitwirkenderBeruf" kurztext="Beruf" format="A" min="1" max="30">
       <Wert pattern="[^\s\p{C}][^\p{C}]*" />
     </Feld>
-    <Feld id="Vorwahlt" kurztext="PLZ" format="A" min="1" max="12" eingabe="pflicht">
+    <Feld id="MitwirkenderVorwahl" kurztext="Vorwahl" format="A" min="1" max="12" >
       <Wert pattern="[^\s\p{C}][^\p{C}]*" />
     </Feld>
-    <Feld id="Rufnummer" kurztext="Ort" format="A" min="1" max="30" eingabe="pflicht">
+    <Feld id="MitwirkenderRufnummer" kurztext="Rufnummer" format="A" min="1" max="30">
       <Wert pattern="[^\s\p{C}][^\p{C}]*" />
     </Feld>
   </Eingabeplan>
