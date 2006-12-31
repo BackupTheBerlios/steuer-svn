@@ -1,3 +1,7 @@
+/**
+ * Umsatzsteuervoranmeldung
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.bo.ustva;
 
 import java.util.HashMap;
@@ -13,11 +17,11 @@ public interface Umsatzsteuervoranmeldung extends ISteuerart {
    * Liefert die Schnittstellenversion
    * @return String
    */
-  public String getVersion ();
+  public String getSchnittstellenVersion ();
   /**
    * Prüft die Daten der Umsatzsteuervoranmeldung
    */
-  public void validate ();
+  public void plausiblisiere ();
 
   /**
    * Liefert den Wert zur ID zurück
