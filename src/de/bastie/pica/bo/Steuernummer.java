@@ -74,7 +74,7 @@ public final class Steuernummer {
   /**
    * Bundesland
    */
-  private final static String BUNDESLAND_NORDRHEIN_WESTPFALEN = "Nordrhein Westpfahlen"; // $NON-NLS-1$
+  private final static String BUNDESLAND_NORDRHEIN_WESTFALEN = "Nordrhein-Westfahlen"; // $NON-NLS-1$
   /**
    * Bundesland
    */
@@ -297,7 +297,7 @@ public final class Steuernummer {
     case 41 : return BUNDESLAND_THUERINGEN;
     case 51 :
     case 52 :
-    case 53 : return BUNDESLAND_NORDRHEIN_WESTPFALEN;
+    case 53 : return BUNDESLAND_NORDRHEIN_WESTFALEN;
     case 91 :
     case 92 : return BUNDESLAND_BAYERN;
     default : throw new SteuerException (900000000,"Die bundeseinheitliche Finanzamtsnummer ist nicht korrekt.");
@@ -337,7 +337,7 @@ public final class Steuernummer {
     else if (BUNDESLAND_BADEN_WUERTTEMBERG.equals(bundesland)) {
       formatted.insert(5, '/');
     }
-    else if (BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+    else if (BUNDESLAND_NORDRHEIN_WESTFALEN.equals(bundesland)) {
       formatted.insert(3, '/');
       formatted.insert(8, '/');
     }
@@ -362,7 +362,7 @@ public final class Steuernummer {
         BUNDESLAND_SACHSEN.equals(bundesland) ||
         BUNDESLAND_SACHSEN_ANHALT.equals(bundesland) ||
         BUNDESLAND_THUERINGEN.equals(bundesland) ||
-        BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+        BUNDESLAND_NORDRHEIN_WESTFALEN.equals(bundesland)) {
       return this.toSteuernummerMitBUFA().substring(1);
     }
     else if (BUNDESLAND_BERLIN.equals(bundesland) ||
@@ -441,7 +441,7 @@ public final class Steuernummer {
     if (BUNDESLAND_BERLIN.equals(bundesland)) {
       return "BE"; // $NON-NLS-1$
     }
-    if (BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+    if (BUNDESLAND_NORDRHEIN_WESTFALEN.equals(bundesland)) {
       return "NW"; // $NON-NLS-1$
     }
     if (BUNDESLAND_HESSEN.equals(bundesland)) {
@@ -538,7 +538,7 @@ public final class Steuernummer {
       summe += produkt [i];
     }
     // Prüfziffer
-    if (BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+    if (BUNDESLAND_NORDRHEIN_WESTFALEN.equals(bundesland)) {
       final int vorhergehendeDurch11TeilbareZahl = (summe % 11 == 0) ? summe - 11 : ((summe / 11) * 11);
       pruefziffer = summe - vorhergehendeDurch11TeilbareZahl;
     }
