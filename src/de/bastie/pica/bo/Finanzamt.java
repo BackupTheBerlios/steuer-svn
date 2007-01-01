@@ -120,6 +120,13 @@ public final class Finanzamt {
         throw new SteuerException(900000000, "Problem beim Laden der Finanzämter.");
       }
     }
+    final int bufa = Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(0,4));
+    for (Finanzamt finanzamt : finanzaemter) {
+      if (bufa == finanzamt.getBufa()) {
+        fa = finanzamt;
+        break;
+      }
+    }
     return fa;
   }
 

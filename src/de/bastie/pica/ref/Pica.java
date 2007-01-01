@@ -1,3 +1,7 @@
+/**
+ * Pica
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.ref;
 
 import de.bastie.pica.ref.gui.PicaFrame;

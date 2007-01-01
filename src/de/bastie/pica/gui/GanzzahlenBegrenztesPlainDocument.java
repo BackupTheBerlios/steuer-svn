@@ -1,3 +1,7 @@
+/**
+ * GanzzahlenBegrenztesPlainDocument
+ * @licence MPL, GPL, LGPL
+ */
 package de.bastie.pica.gui;
 
 import javax.swing.text.AttributeSet;

@@ -4,13 +4,35 @@
  */
 package de.bastie.pica.bo;
 
-import java.util.*;
-
 import de.bastie.pica.*;
 import de.bastie.pica.bo.lsta.*;
 import de.bastie.pica.bo.ustva.*;
 
+/**
+ * Die Steuernummer
+ *
+ * @author © 2006, 2007 Bastie - Sebastian Ritter
+ * @version 1.0
+ */
 public final class Steuernummer {
+
+  private static String BUNDESLAND_BREMEN = "Bremen";
+  private static String BUNDESLAND_BERLIN = "Berlin";
+  private static String BUNDESLAND_SCHLESWIG_HOLSTEIN = "Schleswig Holstein";
+  private static String BUNDESLAND_HAMBURG = "Hamburg";
+  private static String BUNDESLAND_NIEDERSACHSEN = "Niedersachsen";
+  private static String BUNDESLAND_SAARLAND = "Saarland";
+  private static String BUNDESLAND_HESSEN = "Hessen";
+  private static String BUNDESLAND_RHEINLAND_PFALZ = "Rheinland Pfalz";
+  private static String BUNDESLAND_BADEN_WUERTTEMBERG = "Baden Württemberg";
+  private static String BUNDESLAND_BRANDENBURG = "Brandenburg";
+  private static String BUNDESLAND_SACHSEN_ANHALT = "Sachsen Anhalt";
+  private static String BUNDESLAND_SACHSEN = "Sachsen";
+  private static String BUNDESLAND_MECKLENBURG_VORPOMMERN = "Mecklenburg Vorpommern";
+  private static String BUNDESLAND_THUERINGEN = "Thüringen";
+  private static String BUNDESLAND_NORDRHEIN_WESTPFALEN = "Nordrhein Westpfahlen";
+  private static String BUNDESLAND_BAYERN = "Bayern";
+
   /**
    * Die Steuernummer
    */
@@ -103,6 +125,7 @@ public final class Steuernummer {
    */
   protected boolean pruefeSteuernummer (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
     boolean problem = false;
+    final String bundesland = this.getBundeslandZurSteuernummer(steuernummerMitBUFA);
 
     // Anzahl der Stellen prüfen
     if (steuernummerMitBUFA < 100000000000l){
@@ -125,41 +148,62 @@ public final class Steuernummer {
       throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_UNGUELTIGE_BUFA, "Unzulässige Bundeseinheitliche Finanzamtsnummer [BUFA].");
     }
     // Steuerbezirk prüfen
-    final String steuerbezirkString = Long.toString(steuernummerMitBUFA).substring(5,8);
+    final String steuerbezirkString = Long.toString(steuernummerMitBUFA).substring(4,7);
     final int steuerbezirk = Integer.parseInt(steuerbezirkString);
     if (steuerbezirk == 0) {
       throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_0,"Der Steuerbezirk "+steuerbezirkString+" ist ungültig.");
     }
     else if (steuerbezirk < 100){
-      final String bundesland = this.getBundeslandZurSteuernummer(steuernummerMitBUFA);
-      if ("Bayern".equals(bundesland)      ||
-          "Saarland".equals(bundesland)    ||
-          "Thüringen".equals(bundesland)   ||
-          "Sachsen".equals(bundesland)     ||
-          "Brandenburg".equals(bundesland) ||
-          "Sachsen-Anhalt".equals(bundesland) ||
-          "Mecklenburg-Vorpommern".equals(bundesland)) {
+      if (BUNDESLAND_BAYERN.equals(bundesland)      ||
+          BUNDESLAND_SAARLAND.equals(bundesland)    ||
+          BUNDESLAND_THUERINGEN.equals(bundesland)   ||
+          BUNDESLAND_SACHSEN.equals(bundesland)     ||
+          BUNDESLAND_BRANDENBURG.equals(bundesland) ||
+          BUNDESLAND_SACHSEN_ANHALT.equals(bundesland) ||
+          BUNDESLAND_MECKLENBURG_VORPOMMERN.equals(bundesland)) {
         throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_KLEINER_100,"Der Steuerbezirk "+steuerbezirkString+" ist in diesem Bundesland ungültig.");
       }
     }
 
     // Steuernummer prüfen
-    final String bundesland = this.getBundeslandZurSteuernummer(steuernummerMitBUFA);
-    if ("Bayern".equals(bundesland) && "99999999".equals(Long.toString (steuernummerMitBUFA).substring(4))) {
+    if (BUNDESLAND_BAYERN.equals(bundesland) && "99999999".equals(Long.toString (steuernummerMitBUFA).substring(4))) {
       throw new IllegalSteuernummerException(IllegalSteuernummerException.FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_KLEINER_100,"Die Steuernummer "+steuernummerMitBUFA+" ist in diesem Bundesland ungültig.");
     }
 
     // Prüfziffer prüfen
     final int pruefziffer = this.berechnePruefziffer(steuernummerMitBUFA);
 
-    return pruefziffer == Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(11))
-                       && pruefziffer < 10;
-
+    boolean pruefzifferOK = pruefziffer == Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(11))
+                                        && pruefziffer < 10;
+    // Für BY noch das alte Verfahren prüfen.
+    if (!pruefzifferOK && BUNDESLAND_BAYERN.equals(bundesland)) {
+      final int pruefzifferBayernAlt = this.berechnePruefzifferNach2erVerfahren(steuernummerMitBUFA);
+      pruefzifferOK = pruefzifferBayernAlt == Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(11))
+                                           && pruefzifferBayernAlt < 10;
+    }
+    return pruefzifferOK;
   }
 
+  /**
+   * Berechnet die Prüfziffer einer Steuernummer
+   * @param steuernummerMitBUFA long
+   * @return int
+   */
   public int berechnePruefziffer (final long steuernummerMitBUFA) {
-    /** @todo Not yet implemented */
-    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
+    int pruefziffer = -1;
+    final String bundesland = this.getBundeslandZurSteuernummer(steuernummerMitBUFA);
+    if (BUNDESLAND_RHEINLAND_PFALZ.equals(bundesland)) {
+      pruefziffer = this.berechnePruefzifferNachModifizierten11erVerfahren(steuernummerMitBUFA);
+    }
+    else if (BUNDESLAND_BADEN_WUERTTEMBERG.equals(bundesland) ||
+             BUNDESLAND_HESSEN.equals(bundesland) ||
+             BUNDESLAND_SCHLESWIG_HOLSTEIN.equals(bundesland)) { // BY Auslaufmodell
+      pruefziffer = this.berechnePruefzifferNach2erVerfahren(steuernummerMitBUFA);
+    }
+    else { // Restliche Bundesländer (inkl. BY neu)
+      pruefziffer = this.berechnePruefzifferNach11erVerfahren(steuernummerMitBUFA);
+    }
+    return pruefziffer; /** @todo Strukturierte Programmierung - 1 Methodeneingang und 1 Methodenausgang */
   }
 
   public String getBundeslandZurSteuernummer () {
@@ -169,25 +213,25 @@ public final class Steuernummer {
     //ehemals waren die ersten zwei Zeichen der BUFA quasi der OFD Bezirk
     final int ofdKennung = Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(0,2));
     switch (ofdKennung) {
-    case 10 : return "Bremen";
-    case 11 : return "Berlin";
-    case 21 : return "Schleswig Holstein";
-    case 22 : return "Hamburg";
-    case 23 : return "Niedersachsen";
-    case 24 : return "Bremen";
-    case 26 : return "Hessen";
-    case 27 : return "Rheinland Pfalz";
-    case 28 : return "Baden Württemberg";
-    case 30 : return "Brandenburg";
-    case 31 : return "Sachsen Anhalt";
-    case 32 : return "Sachsen";
-    case 40 : return "Mecklenburg Vorpommern";
-    case 41 : return "Thüringen";
+    case 10 : return BUNDESLAND_SAARLAND;
+    case 11 : return BUNDESLAND_BERLIN;
+    case 21 : return BUNDESLAND_SCHLESWIG_HOLSTEIN;
+    case 22 : return BUNDESLAND_HAMBURG;
+    case 23 : return BUNDESLAND_NIEDERSACHSEN;
+    case 24 : return BUNDESLAND_BREMEN;
+    case 26 : return BUNDESLAND_HESSEN;
+    case 27 : return BUNDESLAND_RHEINLAND_PFALZ;
+    case 28 : return BUNDESLAND_BADEN_WUERTTEMBERG;
+    case 30 : return BUNDESLAND_BRANDENBURG;
+    case 31 : return BUNDESLAND_SACHSEN_ANHALT;
+    case 32 : return BUNDESLAND_SACHSEN;
+    case 40 : return BUNDESLAND_MECKLENBURG_VORPOMMERN;
+    case 41 : return BUNDESLAND_THUERINGEN;
     case 51 :
     case 52 :
-    case 53 : return "Nordrhein Westpfahlen";
+    case 53 : return BUNDESLAND_NORDRHEIN_WESTPFALEN;
     case 91 :
-    case 92 : return "Bayern";
+    case 92 : return BUNDESLAND_BAYERN;
     default : throw new SteuerException (900000000,"Die bundeseinheitliche Finanzamtsnummer ist nicht korrekt.");
     }
   }
@@ -241,18 +285,151 @@ public final class Steuernummer {
    * @return int
    * @throws IllegalSteuernummerException
    */
+  protected int berechnePruefzifferNach11erVerfahren (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
+    int pruefziffer = -1;
+    int [] faktoren = null;
+    final String bundesland = this.getBundeslandZurSteuernummer(steuernummerMitBUFA);
+    // Faktoren ermitteln
+    if (BUNDESLAND_BAYERN.equals(bundesland) ||
+        BUNDESLAND_BRANDENBURG.equals(bundesland) ||
+        BUNDESLAND_MECKLENBURG_VORPOMMERN.equals(bundesland) ||
+        BUNDESLAND_SAARLAND.equals(bundesland) ||
+        BUNDESLAND_SACHSEN.equals(bundesland) ||
+        BUNDESLAND_SACHSEN_ANHALT.equals(bundesland) ||
+        BUNDESLAND_THUERINGEN.equals(bundesland)) {
+      faktoren = new int [] {0,5,4,3,2,7,6,5,4,3,2};
+    }
+    else if (BUNDESLAND_BREMEN.equals(bundesland) ||
+             BUNDESLAND_HAMBURG.equals(bundesland)) {
+      faktoren = new int [] {0,0,4,3,2,7,6,5,4,3,2};
+    }
+    else if (BUNDESLAND_NIEDERSACHSEN.equals(bundesland)) {
+      faktoren = new int [] {0,0,2,9,8,7,6,5,4,3,2};
+    }
+    else if (BUNDESLAND_BERLIN.equals(bundesland)) {
+      final int [] faktorenBERLIN_A = new int [] {0,0,0,0,7,6,5,8,4,3,2};
+      final int [] faktorenBERLIN_B = new int [] {0,0,2,9,8,7,6,5,4,3,2};
+      final int bufa = this.getBUFA(steuernummerMitBUFA);
+      switch (bufa) {
+      case 1127 :
+      case 1129 :
+      case 1130 :
+        faktoren = faktorenBERLIN_A;
+        break;
+      case 1118 :
+      case 1131 :
+      case 1132 :
+      case 1133 :
+      case 1134 :
+      case 1135 :
+      case 1136 :
+      case 1137 :
+        faktoren = faktorenBERLIN_B;
+        break;
+      default :
+        faktoren = faktorenBERLIN_A;
+        // Steuerbezirk prüfen
+        final String steuerbezirkString = Long.toString(steuernummerMitBUFA).substring(4,7);
+        final int steuerbezirk = Integer.parseInt(steuerbezirkString);
+        if (steuerbezirk > 200 && steuerbezirk < 694) {
+          faktoren = faktorenBERLIN_B;
+        }
+        else if ((steuerbezirk > 0 && steuerbezirk < 30) && bufa == 1116) {
+          faktoren = faktorenBERLIN_B;
+        }
+        else if ((steuerbezirk == 680 || steuerbezirk == 684) && bufa == 1119) {
+          faktoren = faktorenBERLIN_B;
+        }
+      }
+    }
+    else { //NRW
+      faktoren = new int [] {0,3,2,1,7,6,5,4,3,2,1};
+    }
+    // Produkt
+    int [] produkt = new int[faktoren.length];
+    final String stnr = Long.toString(steuernummerMitBUFA);
+    for (int i = 0; i < produkt.length; i++) {
+      produkt [i] = Integer.parseInt(stnr.substring(i,i+1)) * faktoren [i];
+    }
+    // Summe
+    int summe = 0;
+    for (int i = 0; i < produkt.length; i++) {
+      summe += produkt [i];
+    }
+    // Prüfziffer
+    if (BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+      final int vorhergehendeDurch11TeilbareZahl = (summe % 11 == 0) ? summe - 11 : ((summe / 11) * 11);
+      pruefziffer = summe - vorhergehendeDurch11TeilbareZahl;
+    }
+    else {
+      final int naechsteDurch11TeilbareZahl = (summe % 11 == 0) ? summe + 11 : (((summe / 11) + 1) * 11);
+      pruefziffer = naechsteDurch11TeilbareZahl - summe;
+    }
+    return pruefziffer;
+  }
+
+  /**
+   * Ermittelt die Prüfziffer nach dem 2er Verfahren (BY (alt),BW,HE,SH)
+   * @param steuernummerMitBUFA long
+   * @return int
+   * @throws IllegalSteuernummerException Fehler bei der Prüfziffernberechnung
+   */
   protected int berechnePruefzifferNach2erVerfahren (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
     int pruefziffer = -1;
     final int summanden [] = new int[] {0,0,9,8,7,6,5,4,3,2,1};
     int [] faktoren = new int[] {0,0,512,256,128,64,32,16,8,4,2};
-    if ("Bayern".equals(this.getBundeslandZurSteuernummer(steuernummerMitBUFA))) {
+    if (BUNDESLAND_BAYERN.equals(this.getBundeslandZurSteuernummer(steuernummerMitBUFA))) {
       faktoren = new int[] {0,0,0,0,128,64,32,16,8,4,2}; // In BY werden Stelle 3 und 4 nicht berücksichtiigt
     }
-    else if ("Berlin".equals(this.getBundeslandZurSteuernummer(steuernummerMitBUFA))) {
-
+    final String stnr = Long.toString(steuernummerMitBUFA);
+    int [] summe = new int[summanden.length];
+    for (int i = 0; i < summe.length; i++) {
+      summe [i] = Integer.parseInt(stnr.substring(i,i+1)) + summanden [i];
     }
+    // Summe einstellig (nur letzte Stelle)
+    for (int i = 0; i < summe.length; i++) {
+      while (summe [i] > 9) {
+        summe [i] -= 10;
+      }
+    }
+    // Produkt
+    int [] produkt = new int [faktoren.length];
+    for (int i = 0; i < produkt.length; i++) {
+      produkt [i] = summe [i] * faktoren [i];
+    }
+    // Quersumme einstellig
+    int [] quersummeProdukt = new int [produkt.length];
+    for (int i = 0; i < quersummeProdukt.length; i++) {
+      String wert = Integer.toString(produkt [i]);
+      int quersumme = 0;
+      for (int j = 0; j < wert.length(); j++) {
+         quersumme += Integer.parseInt(wert.substring(j,j+1));
+      }
+      while (quersumme > 9) {
+        String wertQuersumme = Integer.toString(quersumme);
+        int querQuerSumme = 0;
+        for (int k = 0; k < wertQuersumme.length(); k++) {
+          querQuerSumme += Integer.parseInt(wertQuersumme.substring (k,k+1));
+        }
+        quersumme = querQuerSumme;
+      }
+      quersummeProdukt [i] = quersumme;
+    }
+    // Summe der einstelligen Quersummen
+    int summeEinstelligeQuersummen = 0;
+    for (int i = 0; i < quersummeProdukt.length; i++) {
+      summeEinstelligeQuersummen += quersummeProdukt [i];
+    }
+
+    pruefziffer = ((summeEinstelligeQuersummen / 10) +1) *10
+                - summeEinstelligeQuersummen;
+    if (pruefziffer > 10) { // Korrektur falls summeEinstelligeQuersummen glatt durch 10 teilbar.
+      pruefziffer -= 10;
+    }
+
     return pruefziffer;
   }
+
   /**
    * Ermittelt die Prüfziffer nach dem modifizierten 11er Verfahren (nur Rheinland-Pfalz)
    * @param steuernummerMitBUFA long
@@ -274,8 +451,11 @@ public final class Steuernummer {
         quersumme += produkt;
       }
     }
-    pruefziffer = (((int)(quersumme / 10)) +1) *10
+    pruefziffer = ((quersumme / 10) +1) *10
                 - quersumme;
+    if (pruefziffer > 10) {
+      pruefziffer -= 10;
+    }
     return pruefziffer;
   }
 
