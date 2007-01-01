@@ -12,26 +12,73 @@ import de.bastie.pica.bo.ustva.*;
  * Die Steuernummer
  *
  * @author © 2006, 2007 Bastie - Sebastian Ritter
- * @version 1.0
+ * @version 1.0 Stand: 23. November 2006
  */
 public final class Steuernummer {
-
-  private static String BUNDESLAND_BREMEN = "Bremen";
-  private static String BUNDESLAND_BERLIN = "Berlin";
-  private static String BUNDESLAND_SCHLESWIG_HOLSTEIN = "Schleswig Holstein";
-  private static String BUNDESLAND_HAMBURG = "Hamburg";
-  private static String BUNDESLAND_NIEDERSACHSEN = "Niedersachsen";
-  private static String BUNDESLAND_SAARLAND = "Saarland";
-  private static String BUNDESLAND_HESSEN = "Hessen";
-  private static String BUNDESLAND_RHEINLAND_PFALZ = "Rheinland Pfalz";
-  private static String BUNDESLAND_BADEN_WUERTTEMBERG = "Baden Württemberg";
-  private static String BUNDESLAND_BRANDENBURG = "Brandenburg";
-  private static String BUNDESLAND_SACHSEN_ANHALT = "Sachsen Anhalt";
-  private static String BUNDESLAND_SACHSEN = "Sachsen";
-  private static String BUNDESLAND_MECKLENBURG_VORPOMMERN = "Mecklenburg Vorpommern";
-  private static String BUNDESLAND_THUERINGEN = "Thüringen";
-  private static String BUNDESLAND_NORDRHEIN_WESTPFALEN = "Nordrhein Westpfahlen";
-  private static String BUNDESLAND_BAYERN = "Bayern";
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_BREMEN = "Bremen"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_BERLIN = "Berlin"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_SCHLESWIG_HOLSTEIN = "Schleswig Holstein"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_HAMBURG = "Hamburg"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_NIEDERSACHSEN = "Niedersachsen"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_SAARLAND = "Saarland"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_HESSEN = "Hessen"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_RHEINLAND_PFALZ = "Rheinland Pfalz"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_BADEN_WUERTTEMBERG = "Baden Württemberg"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_BRANDENBURG = "Brandenburg"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_SACHSEN_ANHALT = "Sachsen Anhalt"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_SACHSEN = "Sachsen"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_MECKLENBURG_VORPOMMERN = "Mecklenburg Vorpommern"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_THUERINGEN = "Thüringen"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_NORDRHEIN_WESTPFALEN = "Nordrhein Westpfahlen"; // $NON-NLS-1$
+  /**
+   * Bundesland
+   */
+  private final static String BUNDESLAND_BAYERN = "Bayern"; // $NON-NLS-1$
 
   /**
    * Die Steuernummer
@@ -55,12 +102,12 @@ public final class Steuernummer {
     this.steuernummerMitBUFA = stnrMitBufa;
     return pruefzifferOK;
   }
-
+  /**
+   * Die Steuernummer mit Bundeseinheitlicher Finanzamtsnummer
+   * @return long
+   */
   public long getSteuernummerMitBUFA () {
     return this.steuernummerMitBUFA;
-  }
-
-  public Steuernummer () {
   }
 
   /**
@@ -72,6 +119,11 @@ public final class Steuernummer {
     return this.pruefeSteuernummer(this.getSteuernummerMitBUFA());
   }
 
+  /**
+   * Prüft, ob für diese Steuernummer die angeforderte Steuerart zulässig ist.
+   * @param art ISteuerart
+   * @return boolean
+   */
   public boolean isSteuernummerFuerSteuerartZulaessig (final ISteuerart art) {
     return this.isSteuernummerFuerSteuerartZulaessig(this.getSteuernummerMitBUFA(), art);
   }
@@ -107,10 +159,18 @@ public final class Steuernummer {
     }
     return zulaessig;
   }
-
+  /**
+   * Die Bundeseinheitliche Finanzamtsnummer
+   * @return int
+   */
   public int getBUFA () {
     return this.getBUFA (this.getSteuernummerMitBUFA());
   }
+  /**
+   * Die Bundeseinheitliche Finanzamtsnummer
+   * @param steuernummerMitBUFA long
+   * @return int
+   */
   public int getBUFA (final long steuernummerMitBUFA) {
     return Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(0,3));
   }
@@ -123,7 +183,7 @@ public final class Steuernummer {
    * @return boolean ist die Prüfziffer OK
    * @throws IllegalSteuernummerException
    */
-  protected boolean pruefeSteuernummer (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
+  private boolean pruefeSteuernummer (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
     boolean problem = false;
     final String bundesland = this.getBundeslandZurSteuernummer(steuernummerMitBUFA);
 
@@ -203,12 +263,20 @@ public final class Steuernummer {
     else { // Restliche Bundesländer (inkl. BY neu)
       pruefziffer = this.berechnePruefzifferNach11erVerfahren(steuernummerMitBUFA);
     }
-    return pruefziffer; /** @todo Strukturierte Programmierung - 1 Methodeneingang und 1 Methodenausgang */
+    return pruefziffer;
   }
-
+  /**
+   * Das zur Steuernummer zugehörige Bundesland
+   * @return String
+   */
   public String getBundeslandZurSteuernummer () {
     return this.getBundeslandZurSteuernummer(this.getSteuernummerMitBUFA());
   }
+  /**
+   * Das zur Steuernummer zugehörige Bundesland
+   * @param steuernummerMitBUFA long
+   * @return String
+   */
   public String getBundeslandZurSteuernummer (final long steuernummerMitBUFA) {
     //ehemals waren die ersten zwei Zeichen der BUFA quasi der OFD Bezirk
     final int ofdKennung = Integer.parseInt(Long.toString(steuernummerMitBUFA).substring(0,2));
@@ -242,8 +310,43 @@ public final class Steuernummer {
    * @return String
    */
   public String toFormatLandesFormatSteuernummer () {
-    /** @todo Not yet implemented */
-    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
+    final StringBuilder formatted = new StringBuilder(this.toLandesFormatSteuernummer());
+    final String bundesland = this.getBundeslandZurSteuernummer();
+    if (BUNDESLAND_BAYERN.equals(bundesland) ||
+        BUNDESLAND_BRANDENBURG.equals(bundesland) ||
+        BUNDESLAND_MECKLENBURG_VORPOMMERN.equals(bundesland) ||
+        BUNDESLAND_SAARLAND.equals(bundesland) ||
+        BUNDESLAND_SACHSEN.equals(bundesland) ||
+        BUNDESLAND_SACHSEN_ANHALT.equals(bundesland) ||
+        BUNDESLAND_THUERINGEN.equals(bundesland)) {
+      formatted.insert(3, '/');
+      formatted.insert(7, '/');
+    }
+    else if (BUNDESLAND_BERLIN.equals(bundesland) ||
+             BUNDESLAND_HAMBURG.equals(bundesland) ||
+             BUNDESLAND_RHEINLAND_PFALZ.equals(bundesland) ||
+             BUNDESLAND_NIEDERSACHSEN.equals(bundesland)) {
+      formatted.insert(2, '/');
+      formatted.insert(6, '/');
+    }
+    else if (BUNDESLAND_BREMEN.equals(bundesland) ||
+             BUNDESLAND_SCHLESWIG_HOLSTEIN.equals(bundesland)) {
+      formatted.insert(2, ' ');
+      formatted.insert(6, ' ');
+    }
+    else if (BUNDESLAND_BADEN_WUERTTEMBERG.equals(bundesland)) {
+      formatted.insert(5, '/');
+    }
+    else if (BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+      formatted.insert(3, '/');
+      formatted.insert(8, '/');
+    }
+    else { // Hessen
+      formatted.insert(3, ' ');
+      formatted.insert(7, ' ');
+    }
+
+    return formatted.toString();
   }
   /**
    * Liefert die Steuernummer mit der Anzahl der im ländereigenen Format
@@ -251,12 +354,42 @@ public final class Steuernummer {
    * @return String
    */
   public String toLandesFormatSteuernummer () {
-    /** @todo Not yet implemented */
-    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
+    final String bundesland = this.getBundeslandZurSteuernummer();
+    if (BUNDESLAND_BAYERN.equals(bundesland) ||
+        BUNDESLAND_BRANDENBURG.equals(bundesland) ||
+        BUNDESLAND_MECKLENBURG_VORPOMMERN.equals(bundesland) ||
+        BUNDESLAND_SAARLAND.equals(bundesland) ||
+        BUNDESLAND_SACHSEN.equals(bundesland) ||
+        BUNDESLAND_SACHSEN_ANHALT.equals(bundesland) ||
+        BUNDESLAND_THUERINGEN.equals(bundesland) ||
+        BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+      return this.toSteuernummerMitBUFA().substring(1);
+    }
+    else if (BUNDESLAND_BERLIN.equals(bundesland) ||
+             BUNDESLAND_BREMEN.equals(bundesland) ||
+             BUNDESLAND_HAMBURG.equals(bundesland) ||
+             BUNDESLAND_RHEINLAND_PFALZ.equals(bundesland) ||
+             BUNDESLAND_BADEN_WUERTTEMBERG.equals(bundesland) ||
+             BUNDESLAND_NIEDERSACHSEN.equals(bundesland) ||
+             BUNDESLAND_SCHLESWIG_HOLSTEIN.equals(bundesland)) {
+      return this.toSteuernummerMitBUFA().substring(2);
+    }
+    else { // Hessen
+      return "0"+this.toSteuernummerMitBUFA().substring(2);
+    }
   }
+
+  /**
+   * Rückgabe der Steuernummer im 13stelligen ELSTER Format
+   * @return String
+   */
   public String toElsterFormatSteuernummer () {
     return Long.toString(this.getSteuernummerMitBUFA()).substring(0,4)+'0'+Long.toString(this.getSteuernummerMitBUFA()).substring(4);
   }
+  /**
+   * Rückgabe der Steuernummer mit der zugehörigen Bundeseinheiten Finanzamtsnummer
+   * @return String
+   */
   public String toSteuernummerMitBUFA () {
     return Long.toString (this.getSteuernummerMitBUFA());
   }
@@ -269,13 +402,61 @@ public final class Steuernummer {
     return Finanzamt.getAktuelleBUFAs ();
   }
 
+  /**
+   * Liefert die Landeskennung
+   * @param bundesland String
+   * @return String
+   */
   public String getLandeskennung (final String bundesland) {
-    /** @todo Not yet implemented */
-    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
-  }
-  public String [] getBundeslaender () {
-    /** @todo Not yet implemented */
-    throw new UnsupportedOperationException(new Exception ().getStackTrace()[0].getMethodName()+" not yet implemented");
+    if (BUNDESLAND_BAYERN.equals(bundesland)) {
+      return "BY"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_BRANDENBURG.equals(bundesland)) {
+      return "BB"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_MECKLENBURG_VORPOMMERN.equals(bundesland)) {
+      return "MV"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_SAARLAND.equals(bundesland)) {
+      return "SL"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_SACHSEN.equals(bundesland)) {
+      return "SN"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_SACHSEN_ANHALT.equals(bundesland)) {
+      return "ST"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_THUERINGEN.equals(bundesland)) {
+      return "TH"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_BREMEN.equals(bundesland)) {
+      return "HB"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_HAMBURG.equals(bundesland)) {
+      return "HH"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_NIEDERSACHSEN.equals(bundesland)) {
+      return "ND"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_BERLIN.equals(bundesland)) {
+      return "BE"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_NORDRHEIN_WESTPFALEN.equals(bundesland)) {
+      return "NW"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_HESSEN.equals(bundesland)) {
+      return "HE"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_RHEINLAND_PFALZ.equals(bundesland)) {
+      return "RP"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_SCHLESWIG_HOLSTEIN.equals(bundesland)) {
+      return "SH"; // $NON-NLS-1$
+    }
+    if (BUNDESLAND_BADEN_WUERTTEMBERG.equals(bundesland)) {
+      return "BW"; // $NON-NLS-1$
+    }
+    throw new IllegalArgumentException(bundesland);
   }
 
 
@@ -285,7 +466,7 @@ public final class Steuernummer {
    * @return int
    * @throws IllegalSteuernummerException
    */
-  protected int berechnePruefzifferNach11erVerfahren (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
+  private int berechnePruefzifferNach11erVerfahren (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
     int pruefziffer = -1;
     int [] faktoren = null;
     final String bundesland = this.getBundeslandZurSteuernummer(steuernummerMitBUFA);
@@ -374,7 +555,7 @@ public final class Steuernummer {
    * @return int
    * @throws IllegalSteuernummerException Fehler bei der Prüfziffernberechnung
    */
-  protected int berechnePruefzifferNach2erVerfahren (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
+  private int berechnePruefzifferNach2erVerfahren (final long steuernummerMitBUFA) throws IllegalSteuernummerException {
     int pruefziffer = -1;
     final int summanden [] = new int[] {0,0,9,8,7,6,5,4,3,2,1};
     int [] faktoren = new int[] {0,0,512,256,128,64,32,16,8,4,2};
@@ -435,7 +616,7 @@ public final class Steuernummer {
    * @param steuernummerMitBUFA long
    * @return int
    */
-  protected int berechnePruefzifferNachModifizierten11erVerfahren (final long steuernummerMitBUFA) {
+  private int berechnePruefzifferNachModifizierten11erVerfahren (final long steuernummerMitBUFA) {
     int pruefziffer = -1;
 
     final int [] faktoren = new int[] {0,0,1,2,1,2,1,2,1,2,1};
@@ -467,29 +648,67 @@ public final class Steuernummer {
    * @version 1.0
    */
   public final static class IllegalSteuernummerException extends SteuerException {
-    public static int FEHLERCODE_UNGUELTIGE_BUFA                       = 100000001;
-    public static int FEHLERCODE_STEUERNUMMER_MIT_ZU_WENIG_STELLEN     = 100000002;
-    public static int FEHLERCODE_STEUERNUMMER_MIT_ZU_VIELEN_STELLEN    = 100000003;
-    public static int FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_0            = 100000004;
-    public static int FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_KLEINER_100  = 100000005;
-    public static int FEHLERCODE_MEHRSTELLIGE_PRUEFZIFFER              = 100000006;
-    public static int FEHLERCODE_UNZULAESSIGER_PRUEFZIFFER_ALGORITHMUS = 100000007;
+    /** Fehlercode */
+    public final static int FEHLERCODE_UNGUELTIGE_BUFA                       = 100000001;
+    /** Fehlercode */
+    public final static int FEHLERCODE_STEUERNUMMER_MIT_ZU_WENIG_STELLEN     = 100000002;
+    /** Fehlercode */
+    public final static int FEHLERCODE_STEUERNUMMER_MIT_ZU_VIELEN_STELLEN    = 100000003;
+    /** Fehlercode */
+    public final static int FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_0            = 100000004;
+    /** Fehlercode */
+    public final static int FEHLERCODE_UNGUELTIGER_STEUERBEZIRK_KLEINER_100  = 100000005;
+    /** Fehlercode */
+    public final static int FEHLERCODE_MEHRSTELLIGE_PRUEFZIFFER              = 100000006;
+    /** Fehlercode */
+    public final static int FEHLERCODE_UNZULAESSIGER_PRUEFZIFFER_ALGORITHMUS = 100000007;
 
+    /**
+     * Fehlerhafte Steuernummer
+     * @param fehlercode int
+     * @param text String
+     */
     public IllegalSteuernummerException (final int fehlercode, final String text) {
       super (fehlercode, text);
     }
   }
 
+  /**
+   * @todo Testfälle erzeugen
+   * @param args String[]
+   */
   public static void main(String[] args) {
-    final long [] TEST_STEUERNUMMERN = new long[] {
-      272288508658l, // RP gültig
+    final long [] testSteuernummer = new long[] {
       911112747115l, // BY 2er Verfahren gültig
       920423066696l, // BY 11er Verfahren (ganzes FA) gültig
-
+      289381508152l, // BW
+      918181508155l, // BY (München)
+      923881508157l, // BY (Nürnberg)
+      112181508150l, // BE
+      304881508155l, // BB
+      247581508152l, // HB
+      220281508156l, // HH
+      261381508153l, // HE
+      407981508151l, // MV
+      232481508151l, // ND
+      513381508159l, // NW 51
+      521512312341l, // NW 52
+      531481508151l, // NW 53
+      272288508658l, // RP
+      101081508182l, // SL
+      320112312340l, // SN
+      310181508154l, // ST
+      212981508158l, // MV
+      415181508156l, // TH
     };
     Steuernummer stnr = new Steuernummer();
-    for (int i = 0; i < TEST_STEUERNUMMERN.length; i++) {
-      System.out.println("Prüfziffer Steuernummer ["+TEST_STEUERNUMMERN[i]+"] = "+stnr.berechnePruefziffer(TEST_STEUERNUMMERN[i]));
+    for (int i = 0; i < testSteuernummer.length; i++) {
+      stnr.setSteuernummerMitBUFA(testSteuernummer[i]);
+      if (!stnr.pruefeSteuernummer(testSteuernummer[i])) {
+        System.err.println(testSteuernummer[i] + " => Fehler bei der Prüfziffernberechnung "); // $NON-NLS-1$
+      }
+
+      System.err.println(stnr.finanzamt.getName() + '\t'+stnr.toElsterFormatSteuernummer()+'\t'+stnr.toFormatLandesFormatSteuernummer());
     }
   }
 }

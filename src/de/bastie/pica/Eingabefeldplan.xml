@@ -13,6 +13,7 @@
     D = Datum, wird gefolgt von dem Format (in englisch Buchstaben codiert z.B. Ddd.MM.jjjj)
     F = numerische Dezimalzahl, wird gefolgt von der Anzahl der maximalen Zeichen vor dem Punkt + '.' + Anzahl der maximalen Zeichen nach dem Punkt
     G = numerische Ganzzahl
+    L = Auswahlliste
     H = wie F, jedoch nur positive Werte und 0 bzw. 0.00 (Null) zul√§ssig
     h = wie F, jedoch nur negative Werte und 0 bzw. 0.00(Null) zul√§ssig
     I = wie F, jedoch nur positive Werte zul√§ssig
@@ -31,7 +32,7 @@
     </Feld>
     <Feld id="Erstellungsdatum" kurztext="Erstellungsdatum" format="DyyyyMMdd" eingabe="pflicht"/>
     <Feld id="Jahr" kurztext="Jahr" format="Dyyyy" />
-    <Feld id="Zeitraum" kurztext="Zeitraum" format="G" min="2" max="2">
+    <Feld id="Zeitraum" kurztext="Zeitraum" format="L" min="2" max="2" eingabe="pflicht">
       <Wert typ="Liste" separator=",">01,02,03,04,05,06,07,08,09,10,11,12,41,42,43,44</Wert>
     </Feld>
     <Feld id="Steuernummer" kurztext="Steuernummer" format="M#############" min="13" max="13">
@@ -47,10 +48,10 @@
     <Feld id="Kz22" kurztext="Belege werden gesondert eingereicht" format="G" min="1" max="1">
       <Wert typ="Liste" separator=','>1</Wert>
     </Feld>
-    <Feld id="Kz26" format="G" min="1" max="1" eingabe="optional">
+    <Feld id="Kz26" kurztext="Einzugserm‰chtigung einmalig widerrufen" format="G" min="1" max="1" eingabe="optional">
       <Wert typ="Liste" separator=','>1</Wert>
     </Feld>
-    <Feld id="Kz29" format="G" min="1" max="1" eingabe="optional">
+    <Feld id="Kz29" kurztext="Verrechnung gew¸nscht" format="G" min="1" max="1" eingabe="optional">
       <Wert typ="Liste" separator=','>1</Wert>
     </Feld>
     <Feld id="Kz35" format='G' min="1" max="14">
